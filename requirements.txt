@@ -1,0 +1,7 @@
+pystray>=0.19.5
+Pillow>=10.0.0
+httpx>=0.28.0
+keyring>=25.0.0
+pywebview>=6.2.0
+pyinstaller>=6.0.0
+pytest>=8.0.0

@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Usage Monitor</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Header Navigation -->
+    <header class="app-header">
+      <div class="brand">
+        <span class="brand-title">CLAUDE USAGE</span>
+        <span class="version-tag">v1.0</span>
+      </div>
+      <nav class="tab-nav">
+        <button class="tab-btn active" data-tab="overview">OVERVIEW</button>
+        <button class="tab-btn" data-tab="history">HISTORY</button>
+        <button class="tab-btn" data-tab="settings">SETTINGS</button>
+      </nav>
+    </header>
+
+    <!-- Main Content Panels -->
+    <main class="content-area">
+      <!-- OVERVIEW TAB -->
+      <section id="tab-overview" class="tab-pane active">
+        <!-- Status Banner -->
+        <div class="status-banner" id="status-banner">
+          <div class="status-indicator-dot" id="status-dot"></div>
+          <span class="status-label" id="status-label">CONNECTED</span>
+          <span class="status-timestamp" id="status-time">Updated --:--</span>
+          <button class="icon-refresh-btn" id="btn-refresh" title="Refresh Now">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M23 4v6h-6M1 20v-6h6"></path>
+              <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+            </svg>
+          </button>
+        </div>
+
+        <!-- Metric Grid -->
+        <div class="editorial-grid">
+          <!-- 5-Hour Window -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">5-HOUR WINDOW</span>
+              <span class="metric-reset" id="fh-reset">Resets in --</span>
+            </div>
+            <div class="metric-value-display">
+              <span class="metric-number" id="fh-val">--</span>
+              <span class="metric-percent">%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="fh-bar" style="width: 0%;"></div>
+            </div>
+            <div class="metric-subtext" id="fh-reset-exact">Reset at --:--</div>
+          </div>
+
+          <!-- Weekly Window -->
+          <div class="metric-card">
+            <div class="metric-header">
+              <span class="metric-title">WEEKLY WINDOW</span>
+              <span class="metric-reset" id="sd-reset">Resets in --</span>
+            </div>
+            <div class="metric-value-display">
+              <span class="metric-number" id="sd-val">--</span>
+              <span class="metric-percent">%</span>
+            </div>
+            <div class="progress-bar-track">
+              <div class="progress-bar-fill" id="sd-bar" style="width: 0%;"></div>
+            </div>
+            <div class="metric-subtext" id="sd-reset-exact">Reset at --:--</div>
+          </div>
+        </div>
+
+        <!-- Analytics Callout Banner -->
+        <div class="analytics-callout" id="analytics-box">
+          <div class="analytics-header">USAGE VELOCITY & TREND</div>
+          <div class="analytics-body" id="analytics-summary">Calculating trend...</div>
+        </div>
+      </section>
+
+      <!-- HISTORY TAB -->
+      <section id="tab-history" class="tab-pane">
+        <div class="section-title-bar">
+          <span class="section-heading">USAGE HISTORY</span>
+          <div class="time-range-picker">
+            <button class="range-btn active" data-range="24">24H</button>
+            <button class="range-btn" data-range="168">7D</button>
+            <button class="range-btn" data-range="720">30D</button>
+          </div>
+        </div>
+
+        <!-- SVG Chart Container -->
+        <div class="chart-container">
+          <svg id="history-chart" width="100%" height="220" viewBox="0 0 600 220" preserveAspectRatio="none">
+            <!-- Grid lines & SVG path drawn by app.js -->
+          </svg>
+          <div class="chart-tooltip" id="chart-tooltip"></div>
+        </div>
+
+        <!-- Peak Stats Footer -->
+        <div class="stats-row">
+          <div class="stat-item">
+            <span class="stat-label">PEAK TODAY (5-HR)</span>
+            <span class="stat-value" id="stat-peak-5h">--%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">PEAK TODAY (WEEKLY)</span>
+            <span class="stat-value" id="stat-peak-weekly">--%</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-label">USAGE VELOCITY</span>
+            <span class="stat-value" id="stat-velocity">--%/hr</span>
+          </div>
+        </div>
+      </section>
+
+      <!-- SETTINGS TAB -->
+      <section id="tab-settings" class="tab-pane">
+        <div class="section-title-bar">
+          <span class="section-heading">PREFERENCES & SECURITY</span>
+        </div>
+
+        <form id="settings-form" class="settings-form">
+          <div class="setting-row">
+            <div class="setting-info">
+              <label class="setting-title">Polling Interval</label>
+              <span class="setting-desc">Frequency of automatic Anthropic API queries.</span>
+            </div>
+            <select id="setting-poll-interval" class="setting-control select-control">
+              <option value="5">Every 5 minutes</option>
+              <option value="15" selected>Every 15 minutes (Default)</option>
+              <option value="30">Every 30 minutes</option>
+              <option value="60">Every 1 hour</option>
+            </select>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <label class="setting-title">Warning Threshold</label>
+              <span class="setting-desc">Trigger warning state when utilization exceeds percentage.</span>
+            </div>
+            <input type="number" id="setting-warning-threshold" class="setting-control input-number" value="80" min="50" max="95">
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <label class="setting-title">Critical Threshold</label>
+              <span class="setting-desc">Trigger critical state when utilization exceeds percentage.</span>
+            </div>
+            <input type="number" id="setting-critical-threshold" class="setting-control input-number" value="90" min="60" max="99">
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <label class="setting-title">Run at Startup</label>
+              <span class="setting-desc">Automatically launch in Windows system tray when logging in.</span>
+            </div>
+            <label class="switch">
+              <input type="checkbox" id="setting-startup">
+              <span class="slider"></span>
+            </label>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <label class="setting-title">Visual Theme</label>
+              <span class="setting-desc">Toggle between Editorial Dark and Light monochrome modes.</span>
+            </div>
+            <button type="button" id="btn-theme-toggle" class="theme-toggle-btn">
+              <span id="theme-toggle-label">DARK MODE</span>
+            </button>
+          </div>
+
+          <div class="setting-row">
+            <div class="setting-info">
+              <label class="setting-title">OAuth Token Override</label>
+              <span class="setting-desc">Optional token override stored securely in Windows Credential Manager.</span>
+            </div>
+            <input type="password" id="setting-custom-token" class="setting-control input-text" placeholder="Optional token override">
+          </div>
+
+          <div class="form-actions">
+            <button type="submit" class="btn-primary">SAVE PREFERENCES</button>
+            <span class="save-toast" id="save-toast">Saved</span>
+          </div>
+        </form>
+      </section>
+    </main>
+  </div>
+  <script src="app.js"></script>
+</body>
+</html>

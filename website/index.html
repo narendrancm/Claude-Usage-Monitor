@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Claude Usage Monitor for Windows — System Tray App for Claude Code Limits</title>
+  <meta name="description" content="No more running /usage in terminal. Claude Usage Monitor reads the OAuth token Claude Code already stores in Windows Credential Manager and tracks your 5-hour and weekly limits in your system tray.">
+  <meta name="keywords" content="Claude Code, Anthropic, Claude Usage, Windows System Tray, Developer Utility, Monochromatic UI">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Top Navigation Header -->
+  <header class="site-header" id="top">
+    <div class="container header-container">
+      <a href="#top" class="brand-logo" id="brand-logo-link">
+        <span class="brand-icon"></span>
+        <span class="brand-name">CLAUDE USAGE MONITOR</span>
+        <span class="platform-badge">FOR WINDOWS</span>
+      </a>
+      <nav class="nav-links">
+        <a href="#how-it-works" class="nav-link" id="nav-how">How it works</a>
+        <a href="#privacy" class="nav-link" id="nav-privacy">Privacy</a>
+        <a href="#features" class="nav-link" id="nav-features">Features</a>
+        <a href="#build" class="nav-link" id="nav-build">Source & Build</a>
+        <button id="theme-toggle-btn" class="theme-toggle" aria-label="Toggle visual theme">
+          <span id="theme-icon">❖</span> <span id="theme-text">LIGHT</span>
+        </button>
+      </nav>
+      <div class="header-actions">
+        <a href="#download" class="btn btn-sm btn-primary" id="header-download-btn">Download .exe</a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Hero Section -->
+  <section class="hero-section">
+    <div class="container hero-container">
+      <div class="hero-badge">
+        <span class="status-dot"></span> ALWAYS IN YOUR WINDOWS SYSTEM TRAY
+      </div>
+      <h1 class="hero-title">Your 5-hour and weekly Claude limits, always one glance away.</h1>
+      <p class="hero-subtitle">
+        Claude Code subscribers keep bumping into session limits with no way to check without running <code>/usage</code>. 
+        <strong>Claude Usage Monitor</strong> reads the OAuth credential already stored in Windows, queries Anthropic in the background every 15 minutes, and displays your exact status in the system tray.
+      </p>
+
+      <div class="hero-ctas">
+        <a href="../dist/Claude%20Usage%20Monitor.exe" download class="btn btn-lg btn-primary" id="hero-download-btn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+          Download for Windows (.exe)
+        </a>
+        <a href="#how-it-works" class="btn btn-lg btn-secondary" id="hero-learn-btn">
+          See How It Works
+        </a>
+      </div>
+
+      <div class="hero-meta">
+        <span>✓ Windows 10 & 11 Native</span>
+        <span>✓ Zero Configuration Required</span>
+        <span>✓ 100% Local & Privacy-First</span>
+      </div>
+
+      <!-- Interactive Mockup Demo -->
+      <div class="demo-wrapper">
+        <div class="mockup-frame">
+          <div class="mockup-header">
+            <div class="mockup-window-controls">
+              <span class="control-dot red"></span>
+              <span class="control-dot yellow"></span>
+              <span class="control-dot green"></span>
+            </div>
+            <span class="mockup-title">Claude Usage Monitor — Live Interactive Preview</span>
+            <div class="mockup-actions">
+              <button id="demo-refresh-btn" class="mockup-btn">↺ Refresh</button>
+            </div>
+          </div>
+          <div class="mockup-body">
+            <!-- Simulated Overview Dashboard -->
+            <div class="demo-status-bar">
+              <div class="demo-dot safe" id="demo-dot"></div>
+              <span id="demo-status-text">CONNECTED</span>
+              <span class="demo-time" id="demo-time">Updated 18:24</span>
+            </div>
+            <div class="demo-grid">
+              <div class="demo-card">
+                <div class="demo-card-head">
+                  <span>5-HOUR WINDOW</span>
+                  <span id="demo-fh-reset">Resets in 1h 32m</span>
+                </div>
+                <div class="demo-val-row">
+                  <span class="demo-val" id="demo-fh-num">42</span>
+                  <span class="demo-pct">%</span>
+                </div>
+                <div class="demo-bar-track">
+                  <div class="demo-bar-fill" id="demo-fh-fill" style="width: 42%;"></div>
+                </div>
+                <div class="demo-sub">Reset at 20:00 UTC</div>
+              </div>
+
+              <div class="demo-card">
+                <div class="demo-card-head">
+                  <span>WEEKLY WINDOW</span>
+                  <span id="demo-sd-reset">Resets in 3d 4h</span>
+                </div>
+                <div class="demo-val-row">
+                  <span class="demo-val" id="demo-sd-num">67</span>
+                  <span class="demo-pct">%</span>
+                </div>
+                <div class="demo-bar-track">
+                  <div class="demo-bar-fill" id="demo-sd-fill" style="width: 67%;"></div>
+                </div>
+                <div class="demo-sub">Reset at Saturday 12:00 UTC</div>
+              </div>
+            </div>
+
+            <!-- Demo Interactive Controls -->
+            <div class="demo-simulator-bar">
+              <span>SIMULATE USAGE STATE:</span>
+              <button class="sim-btn active" data-state="safe">SAFE (42%)</button>
+              <button class="sim-btn" data-state="warning">WARNING (82%)</button>
+              <button class="sim-btn" data-state="critical">CRITICAL (94%)</button>
+              <button class="sim-btn" data-state="offline">OFFLINE</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- How It Works Section -->
+  <section class="section" id="how-it-works">
+    <div class="container">
+      <div class="section-label">ARCHITECTURE</div>
+      <h2 class="section-title">Token already there. One direct call. Same numbers.</h2>
+      <p class="section-lead">
+        Claude Usage Monitor doesn't have its own login, server, or cloud account. It connects directly from your Windows desktop to Anthropic.
+      </p>
+
+      <div class="steps-grid">
+        <div class="step-card">
+          <div class="step-number">01</div>
+          <h3 class="step-title">Token, already there</h3>
+          <p class="step-desc">
+            Claude Code stores your OAuth credential securely in Windows Credential Manager under <code>Claude Code-credentials</code>. We read that token automatically.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">02</div>
+          <h3 class="step-title">One direct call</h3>
+          <p class="step-desc">
+            The app makes a direct HTTPS request to <code>GET /api/oauth/usage</code> directly to <code>api.anthropic.com</code>. No proxy, no third-party middleman.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">03</div>
+          <h3 class="step-title">Same numbers as /usage</h3>
+          <p class="step-desc">
+            Returns your exact 5-hour session and weekly utilization figures — identical to running the CLI's internal <code>/usage</code> command.
+          </p>
+        </div>
+
+        <div class="step-card">
+          <div class="step-number">04</div>
+          <h3 class="step-title">System Tray + Dashboard</h3>
+          <p class="step-desc">
+            Live dynamic tray icon with status ring indicator. Hover for instant numbers or click for the full monochrome editorial dashboard.
+          </p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Privacy & Security Section -->
+  <section class="section section-alt" id="privacy">
+    <div class="container">
+      <div class="section-label">SECURITY & PRIVACY</div>
+      <h2 class="section-title">Nothing leaves your Windows machine except Anthropic's API.</h2>
+      
+      <div class="privacy-box">
+        <div class="privacy-feature">
+          <div class="privacy-icon">🔒</div>
+          <div>
+            <h4>Local-First Storage</h4>
+            <p>Historical usage snapshots and preferences remain on your local machine inside <code>%APPDATA%\ClaudeUsageMonitor\history.db</code>. No external database or cloud synchronization.</p>
+          </div>
+        </div>
+
+        <div class="privacy-feature">
+          <div class="privacy-icon">🛡️</div>
+          <div>
+            <h4>Zero Telemetry & Analytics</h4>
+            <p>No Google Analytics, no Mixpanel, no crash reporting servers, no tracking beacons. Your usage data is strictly your own.</p>
+          </div>
+        </div>
+
+        <div class="privacy-feature">
+          <div class="privacy-icon">🔑</div>
+          <div>
+            <h4>Redacted Log Files</h4>
+            <p>OAuth tokens, bearer strings, and API keys are automatically redacted from application logs before writing to disk.</p>
+          </div>
+        </div>
+
+        <div class="privacy-feature">
+          <div class="privacy-icon">⚡</div>
+          <div>
+            <h4>Direct Anthropic Connection</h4>
+            <p>The only network requests made by this application are direct HTTPS queries to <code>api.anthropic.com</code> using standard TLS encryption.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Features Section -->
+  <section class="section" id="features">
+    <div class="container">
+      <div class="section-label">CAPABILITIES</div>
+      <h2 class="section-title">Built like a real product. Craft in every detail.</h2>
+
+      <div class="features-grid">
+        <div class="feature-card">
+          <h3 class="feature-title">Dynamic System Tray Icon</h3>
+          <p class="feature-desc">Dynamic 32x32/64x64 monochrome icon generated via Pillow. Accent dot shifts from Green to Orange to Red as limits approach.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3 class="feature-title">5-Hour & Weekly Windows</h3>
+          <p class="feature-desc">Tracks both rapid 5-hour session caps and long-term weekly utilization percentages with relative reset countdowns.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3 class="feature-title">Usage Velocity Analytics</h3>
+          <p class="feature-desc">Calculates your usage velocity (% per hour), recent trend direction, today's peak usage, and estimated time remaining before limit hit.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3 class="feature-title">SQLite 30-Day History</h3>
+          <p class="feature-desc">Stores 15-minute history samples locally. View interactive monochrome SVG line graphs across 24-hour, 7-day, and 30-day timeframes.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3 class="feature-title">Windows Toast Notifications</h3>
+          <p class="feature-desc">Configurable notifications at 80% warning and 90% critical thresholds with built-in cooldown debouncing to prevent spam.</p>
+        </div>
+
+        <div class="feature-card">
+          <h3 class="feature-title">Editorial Monochrome UI</h3>
+          <p class="feature-desc">Lightweight native <code>pywebview</code> interface with Dark & Light theme modes, high-contrast typography, and smooth transitions.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Source & Build Section -->
+  <section class="section section-alt" id="build">
+    <div class="container">
+      <div class="section-label">DEVELOPMENT & PACKAGING</div>
+      <h2 class="section-title">Open source, local build, standalone executable.</h2>
+      
+      <div class="code-showcase">
+        <div class="code-header">
+          <span class="code-title">BUILD FROM SOURCE (POWERSHELL / CMD)</span>
+          <button id="copy-code-btn" class="copy-btn">Copy Commands</button>
+        </div>
+        <pre class="code-block"><code id="code-content"># 1. Clone repository
+git clone https://github.com/your-username/claude-usage-monitor.git
+cd claude-usage-monitor
+
+# 2. Install dependencies
+uv pip install -r requirements.txt
+
+# 3. Run unit tests (13/13 passing)
+python -m pytest tests/
+
+# 4. Build standalone executable (.exe)
+python build.py
+# Output: dist/Claude Usage Monitor.exe</code></pre>
+      </div>
+    </div>
+  </section>
+
+  <!-- Download CTA Banner -->
+  <section class="download-banner" id="download">
+    <div class="container download-container">
+      <h2 class="download-title">Get Claude Usage Monitor for Windows today.</h2>
+      <p class="download-desc">Free, lightweight, privacy-first desktop application. Runs quietly in your system tray.</p>
+      <div class="download-ctas">
+        <a href="../dist/Claude%20Usage%20Monitor.exe" download class="btn btn-lg btn-primary" id="footer-download-btn">
+          Download Standalone .exe (v1.0)
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <div class="container footer-container">
+      <div class="footer-left">
+        <span class="footer-brand">CLAUDE USAGE MONITOR</span>
+        <span class="footer-copy">MIT License. Designed with editorial craft for Windows.</span>
+      </div>
+      <div class="footer-right">
+        <a href="#top">Back to top ↑</a>
+      </div>
+    </div>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
